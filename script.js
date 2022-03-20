@@ -79,4 +79,4 @@ function game() {
 }
 
 // Let there be light!
-game();
+// game();
