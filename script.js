@@ -1,14 +1,21 @@
 // Global Variables
 const PLAYER_SELECTIONS = ["ROCK", "PAPER", "SCISSORS"];
 
-// Helper functions
+// DOM Nodes
+const gameInformation = document.querySelector("#game-information");
+const buttons = document.querySelectorAll("button");
+
+// Helper Functions
 function computerPlay() {
+  // Make the computer choose rock, paper, or scissors
   const randomIndex = Math.floor(Math.random() * PLAYER_SELECTIONS.length);
 
   return PLAYER_SELECTIONS[randomIndex];
 }
 
 function playRound(playerSelection, computerSelection) {
+  // Game rules
+
   //   Check if computer win
   if (
     (playerSelection === "ROCK" && computerSelection === "PAPER") ||
@@ -33,50 +40,31 @@ function playRound(playerSelection, computerSelection) {
   }
 }
 
-// Main game function
-function game() {
-  const playRounds = 5;
-  let playerScore = 0;
-  let computerScore = 0;
-
-  //   Here's where the fun part begins!
-  for (let i = 0; i < playRounds; i++) {
-    const playerSelection = prompt(
-      "Enter rock, paper, or scissors:"
-    ).toUpperCase();
-    const computerSelection = computerPlay();
-    const playRoundResult = playRound(playerSelection, computerSelection);
-
-    // Check who won the round
-    if (playRoundResult === "Computer won") {
-      computerScore++;
-      console.log(
-        `Computer win! ${computerSelection} beats ${playerSelection}.`
-      );
-    }
-    if (playRoundResult === "Player won") {
-      playerScore++;
-      console.log(`You win! ${playerSelection} beats ${computerSelection}.`);
-    } else {
-      console.log(`Computer chose ${computerSelection} too, it's a draw!`);
-    }
-  }
-
-  //   Play summary
-  if (playerScore < computerScore) {
-    console.log(
-      `Computer got the best score with a score of ${computerScore} out of ${playRounds}.`
-    );
-  } else if (playerScore > computerScore) {
-    console.log(
-      `You got the best score with a score of ${playerScore} out of ${playRounds}.`
-    );
+function setPlayRoundResult(
+  playRoundResult,
+  playerSelection,
+  computerSelection
+) {
+  // Set the result in the ui
+  if (playRoundResult === "Computer won") {
+    gameInformation.textContent = `Computer win! ${computerSelection} beats ${playerSelection}.`;
+  } else if (playRoundResult === "Player won") {
+    gameInformation.textContent = `You win! ${playerSelection} beats ${computerSelection}.`;
   } else {
-    console.log(
-      `You both got a score of ${playerScore} out of ${playRounds}, it's a draw!`
-    );
+    gameInformation.textContent = `Computer chose ${computerSelection} too, it's a draw!`;
   }
 }
 
-// Let there be light!
-// game();
+function game(event) {
+  // Main game function, triggered by event listener (button click)
+  const playerSelection = this.id.toUpperCase();
+  const computerSelection = computerPlay();
+  const playRoundResult = playRound(playerSelection, computerSelection);
+
+  setPlayRoundResult(playRoundResult, playerSelection, computerSelection);
+}
+
+// Event Listeners
+buttons.forEach((button) => {
+  button.addEventListener("click", game);
+});
