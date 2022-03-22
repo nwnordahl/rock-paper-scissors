@@ -1,8 +1,13 @@
 // Global Variables
+let playerScore = 0;
+let computerScore = 0;
+let drawScore = 0;
 const PLAYER_SELECTIONS = ["ROCK", "PAPER", "SCISSORS"];
 
 // DOM Nodes
 const gameInformation = document.querySelector("#game-information");
+const gameResult = document.querySelector("#game-result");
+const gameEndResult = document.querySelector("#game-end-result");
 const buttons = document.querySelectorAll("button");
 
 // Helper Functions
@@ -57,14 +62,46 @@ function setPlayRoundResult(
 
 function game(event) {
   // Main game function, triggered by event listener (button click)
+  gameEndResult.textContent = "";
+  const rounds = 5;
+
   const playerSelection = this.id.toUpperCase();
   const computerSelection = computerPlay();
   const playRoundResult = playRound(playerSelection, computerSelection);
 
   setPlayRoundResult(playRoundResult, playerSelection, computerSelection);
+
+  // Update total scores
+  if (playRoundResult === "Computer won") {
+    computerScore++;
+  } else if (playRoundResult === "Player won") {
+    playerScore++;
+  } else {
+    drawScore++;
+  }
+
+  // Display scores
+  gameResult.textContent = `Computer: ${computerScore}; Player: ${playerScore}; Draw: ${drawScore}`;
+
+  if (computerScore + playerScore + drawScore === rounds) {
+    if (computerScore > playerScore) {
+      gameEndResult.textContent = "Computer won most in total!";
+    } else if (playerScore > computerScore) {
+      gameEndResult.textContent = "Player won most in total!";
+    } else {
+      gameEndResult.textContent =
+        "Player and computer got the same score in total!";
+    }
+    computerScore = 0;
+    playerScore = 0;
+    drawScore = 0;
+  }
 }
 
 // Event Listeners
 buttons.forEach((button) => {
   button.addEventListener("click", game);
 });
+
+// Display initial scores
+gameResult.textContent = `Computer: ${computerScore}; Player: ${playerScore}; Draw: ${drawScore}`;
